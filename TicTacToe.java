@@ -68,14 +68,14 @@ public class TicTacToe extends JFrame implements ActionListener
             boolean isAllElementsFilled=!TicTacToeDriver.isMovesLeft(board);
             WinUtil w=new WinUtil(board);
             boolean isWin=w.checkForWin();
-            if(isAllElementsFilled)
+            if(isAllElementsFilled&&!isWin)
             {
                 JOptionPane.showMessageDialog(null, "Game Over. Its a draw");
                 reset();
             }
-            else if(isAllElementsFilled==false&&isWin)
+            else if(isWin)
             {
-                JOptionPane.showMessageDialog(null, "Game Over. "+buttonClicked.getLabel()+" won.");
+                JOptionPane.showMessageDialog(null, "Game Over. "+(WinUtil.winner==1?TicTacToeDriver.o:TicTacToeDriver.x)+" won.");
                 reset();
             }
             else if(!TicTacToeDriver.isAi)
@@ -88,8 +88,12 @@ public class TicTacToe extends JFrame implements ActionListener
     {
         String s[][]=new String[buttons.length][buttons.length];
         for(int i=0;i<buttons.length;i++)
+        {
             for(int j=0;j<buttons.length;j++)
+            {
                 s[i][j]=buttons[i][j].getLabel();
+            }
+        }
         return s;
     }
 }
