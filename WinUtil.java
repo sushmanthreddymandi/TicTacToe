@@ -1,6 +1,7 @@
 public class WinUtil
 {
 	private String board[][];
+	static int winner=0;
 	WinUtil()
 	{
 		board=null;
@@ -17,138 +18,144 @@ public class WinUtil
 	{
 		this.board=board;
 	}
-	public int checkForWinRowWise()
+	public long getScore(int nx,int no,int ns)
+	{
+		if(nx==0&&no==0)
+		{
+			return 0L;
+		}
+		else if(nx==0&&ns==0)
+		{
+			return Integer.MIN_VALUE;
+		}
+		else if(no==0&&ns==0)
+		{
+			return Integer.MAX_VALUE;
+		}
+		else if(no==0)
+		{
+			return (long)Math.pow(10L,nx);
+		}
+		else if(nx==0)
+		{
+			return -(long)Math.pow(10L,no);
+		}
+		else 
+		{
+			return 0L;
+		}
+	}
+	public long getScoreRowWise()
     {
-        String temp;
+        long toRet=0L;
         for(int i=0;i<board.length;i++)
         {
-            boolean isWin=true;
-            temp=board[i][0];
-            if(!temp.equals(""))
+        	int ns=0,nx=0,no=0;
+            for(int j=0;j<board.length;j++)
             {
-                for(int j=1;j<board.length;j++)
-                {
-                    if(board[i][j].equals(""))
-                    {
-                        isWin=false;
-                        break;
-                    }
-                    if(!temp.equals(board[i][j]))
-                    {
-                        isWin=false;
-                        break;
-                    }
-                }
-                if(isWin)
-                {
-                	if(temp.equals(TicTacToeDriver.x))
-                	{
-                		return 10;
-                	}
-                	else
-                	{
-                		return -10;
-                	}
-                }
+            	if(board[i][j].equals(""))
+            	{
+            		ns++;
+            	}
+            	else if(board[i][j].equalsIgnoreCase(TicTacToeDriver.x))
+            	{
+            		nx++;
+            	}
+            	else
+            	{
+            		no++;
+            	}
             }
+            toRet+=getScore(nx,no,ns);
         }
-        return 0;
+        return toRet;
     }
-    public int checkForWinColWise()
+    public long getScoreColWise()
     {
-        String temp;
+        long toRet=0L;
         for(int i=0;i<board.length;i++)
         {
-            boolean isWin=true;
-            temp=board[0][i];
-            if(!temp.equals(""))
+        	int ns=0,nx=0,no=0;
+            for(int j=0;j<board.length;j++)
             {
-                for(int j=1;j<board.length;j++)
-                {
-                    if(board[j][i].equals(""))
-                    {
-                        isWin=false;
-                        break;
-                    }
-                    if(!temp.equals(board[j][i]))
-                    {
-                        isWin=false;
-                        break;
-                    }
-                }
-                if(isWin)
-                {
-                	if(temp.equals(TicTacToeDriver.x))
-                	{
-                		return 10;
-                	}
-                	else
-                	{
-                		return -10;
-                	}
-                }
+            	if(board[j][i].equals(""))
+            	{
+            		ns++;
+            	}
+            	else if(board[j][i].equalsIgnoreCase(TicTacToeDriver.x))
+            	{
+            		nx++;
+            	}
+            	else
+            	{
+            		no++;
+            	}
             }
+            toRet+=getScore(nx,no,ns);
         }
-        return 0;
+        return toRet;
     }
-    public int checkForWinDiagonal()
+    public long getScoreDiagonal()
     {
-        String temp=board[0][0];
-        if(temp.equals(""))
+    	int ns=0,nx=0,no=0;
+        for(int i=0;i<board.length;i++)
         {
-            return 0;
-        }
-        else
-        {
-            for(int i=1;i<board.length;i++)
+			if(board[i][i].equals(""))
             {
-                if(!temp.equals(board[i][i]))
-                {
-                    return 0;
-                }
+            	ns++;
+            }
+            else if(board[i][i].equalsIgnoreCase(TicTacToeDriver.x))
+            {
+            	nx++;
+            }
+            else
+            {
+            	no++;
             }
         }
-        if(temp.equals(TicTacToeDriver.x))
-        {
-        	return 10;
-        }
-        else
-        {
-        	return -10;
-        }
+        return getScore(nx,no,ns);
     }
-    public int checkForWinSecondaryDiagonal()
+    public long getScoreSecondaryDiagonal()
     {
-        String temp=board[0][board.length-1];
-        if(temp.equals(""))
+    	int ns=0,nx=0,no=0;
+        for(int i=0;i<board.length;i++)
         {
-            return 0;
-        }
-        else
-        {
-            for(int i=1;i<board.length;i++)
+			if(board[i][board.length-i-1].equals(""))
             {
-                if(!temp.equals(board[i][board.length-i-1]))
-                {
-                    return 0;
-                }
+            	ns++;
+            }
+            else if(board[i][board.length-i-1].equalsIgnoreCase(TicTacToeDriver.x))
+            {
+            	nx++;
+            }
+            else
+            {
+            	no++;
             }
         }
-        if(temp.equals(TicTacToeDriver.x))
-        {
-        	return 10;
-        }
-        else
-        {
-        	return -10;
-        }
+        return getScore(nx,no,ns);
     }
     public boolean checkForWin()
     {
-        boolean isDiagonalWin=checkForWinDiagonal()!=0;
-        boolean isSecondaryDiagonalWin=checkForWinSecondaryDiagonal()!=0;
-        boolean isRowWin=checkForWinRowWise()!=0;
-        boolean isColWin=checkForWinColWise()!=0;
+    	long diagonalScore=getScoreDiagonal();
+    	long secondaryDiagonalScore=getScoreSecondaryDiagonal();
+    	long rowScore=getScoreRowWise();
+    	long colScore=getScoreColWise();
+    	boolean isDiagonalWin=Math.abs(diagonalScore)>=Math.abs(Math.pow(10,board.length));
+        boolean isSecondaryDiagonalWin=Math.abs(secondaryDiagonalScore)>=Math.abs(Math.pow(10,board.length));
+        boolean isRowWin=Math.abs(rowScore)>=Math.abs(Math.pow(10,board.length));
+        boolean isColWin=Math.abs(colScore)>=Math.abs(Math.pow(10,board.length));
+        if(isDiagonalWin||isRowWin||isColWin||isSecondaryDiagonalWin)
+        {
+        	if(rowScore+colScore+diagonalScore+secondaryDiagonalScore<0)
+        	{
+        		winner=1;
+        	}
+        	else
+        	{
+        		winner=0;
+        	}
+        }
         return isDiagonalWin||isRowWin||isColWin||isSecondaryDiagonalWin;  
     }
 }

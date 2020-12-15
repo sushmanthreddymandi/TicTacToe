@@ -21,7 +21,7 @@ public class TicTacToeDriver
     }
     static Move findBestMove(String board[][]) 
 	{ 
-	    int bestVal=Integer.MIN_VALUE;
+	    long bestVal=Long.MIN_VALUE;
 	    Move bestMove=new Move();
 	    bestMove.setR(-1);
 	    bestMove.setC(-1);
@@ -32,7 +32,7 @@ public class TicTacToeDriver
 	            if(board[i][j].equals("")) 
 	            { 
 	                board[i][j]=x;
-	                int moveVal=minimax(board, 0, false, Integer.MIN_VALUE,Integer.MAX_VALUE);
+	                long moveVal=minimax(board, 0, false, Integer.MIN_VALUE,Integer.MAX_VALUE);
 	                board[i][j]="";
 	                if(moveVal > bestVal) 
 	                { 
@@ -45,31 +45,37 @@ public class TicTacToeDriver
 	    } 
 	    return bestMove;
 	}
-    static int evaluate(String b[][]) 
+    static long evaluate(String b[][]) 
 	{ 
         WinUtil w=new WinUtil(b);
-        int score=w.checkForWinRowWise();
-        if(score!=0)return score;
-        score=w.checkForWinColWise();
-        if(score!=0)return score;
-        score=w.checkForWinDiagonal();
-        if(score!=0)return score;
-        score=w.checkForWinSecondaryDiagonal();
-        if(score!=0)return score;
-	    return 0;
+        long score=w.getScoreRowWise();
+        //if(score!=0)return score;
+        score+=w.getScoreColWise();
+        //if(score!=0)return score;
+        score+=w.getScoreDiagonal();
+        //if(score!=0)return score;
+        score+=w.getScoreSecondaryDiagonal();
+        //if(score!=0)return score;
+	    return score;
 	}
-	static int minimax ( String board[][], int depth, boolean isMax )
+	static long minimax(String board[][],int depth,boolean isMax )
     {
-        int score=evaluate(board);
+        long score=evaluate(board);
         if(score==10)
+        {
             return score;
-        if(score==-10)
+        }
+        else if(score==-10)
+        {
             return score;
-        if(isMovesLeft(board)==false)
+        }
+        else if(isMovesLeft(board)==false)
+        {
             return 0;
+        }
         if(isMax)
         {
-            int best=Integer.MIN_VALUE;
+            long best=Integer.MIN_VALUE;
             for(int i=0;i<board.length;i++)
             {
                 for(int j=0;j<board.length;j++)
@@ -77,7 +83,7 @@ public class TicTacToeDriver
                     if(board[i][j].equals(""))
                     {
                         board[i][j]=x;
-                        best=Math.max( best, minimax ( board, depth+1, !isMax ) );
+                        best=Math.max( best, minimax(board,depth+1,!isMax));
                         board[i][j]="" ;
                     }
                 }
@@ -86,7 +92,7 @@ public class TicTacToeDriver
         }
         else
         {
-            int best=Integer.MAX_VALUE;
+            long best=Integer.MAX_VALUE;
             for(int i=0;i<board.length;i++)
             {
                 for(int j=0;j<board.length;j++)
@@ -94,7 +100,7 @@ public class TicTacToeDriver
                     if(board[i][j].equals(""))
                     {
                         board[i][j]=o;
-                        best=Math.min(best, minimax(board, depth+1, isMax));
+                        best=Math.min(best,minimax(board,depth+1,isMax));
                         board[i][j]="";
                     }
                 }
@@ -102,19 +108,20 @@ public class TicTacToeDriver
             return best;
         }
     }
-    static int minimax ( String board[][], int depth, boolean isMax, int alpha, int beta)
+    static long minimax(String board[][],int depth,boolean isMax,long alpha,long beta)
     {
-        System.out.println(depth);
-        int score=evaluate(board);
-        if(score==10)
+        long score=evaluate(board);
+        if(depth>=5&&score!=0)
+        {
             return score;
-        if(score==-10)
-            return score;
-        if(isMovesLeft(board)==false)
+        }
+        else if(isMovesLeft(board)==false)
+        {
             return 0;
+        }
         if(isMax)
         {
-            int best=Integer.MIN_VALUE;
+            long best=Integer.MIN_VALUE;
             for(int i=0;i<board.length;i++)
             {
                 boolean toBreak=false;
@@ -123,9 +130,9 @@ public class TicTacToeDriver
                     if(board[i][j].equals(""))
                     {
                         board[i][j]=x;
-                        int val=minimax ( board, depth+1, !isMax, alpha,beta);
-                        best=Math.max( best, val);
-                        board[i][j]="" ;
+                        long val=minimax(board,depth+1,!isMax,alpha,beta);
+                        best=Math.max(best,val);
+                        board[i][j]="";
                         alpha=Math.max(alpha,best);
                         if(beta<=alpha)
                         {
@@ -136,12 +143,12 @@ public class TicTacToeDriver
                 }
                 if(toBreak)break;
             }
-            System.out.println(alpha+" "+beta);
+            //System.out.println(alpha+" "+beta);
             return best;
         }
         else
         {
-            int best=Integer.MAX_VALUE;
+            long best=Integer.MAX_VALUE;
             for(int i=0;i<board.length;i++)
             {
                 boolean toBreak=false;
@@ -150,7 +157,7 @@ public class TicTacToeDriver
                     if(board[i][j].equals(""))
                     {
                         board[i][j]=o;
-                        int val=minimax(board, depth+1, isMax, alpha,beta);
+                        long val=minimax(board, depth+1, isMax, alpha,beta);
                         best=Math.min(best, val);
                         board[i][j]="";
                         beta=Math.min(beta,val);
@@ -163,7 +170,7 @@ public class TicTacToeDriver
                 }
                 if(toBreak)break;
             }
-            System.out.println(alpha+" "+beta);
+            //System.out.println(alpha+" "+beta);
             return best;
         }
     }
@@ -173,7 +180,7 @@ public class TicTacToeDriver
         if(args[0].equalsIgnoreCase("ai"))
     	{
     		isAi=true;
-            window=new TicTacToe("TicTacToe Player VS AI",3`);
+            window=new TicTacToe("TicTacToe Player VS AI",Integer.parseInt(args[1]));
     	}
     	else
     	{
