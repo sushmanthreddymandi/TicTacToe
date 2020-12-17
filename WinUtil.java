@@ -2,22 +2,43 @@ public class WinUtil
 {
 	private String board[][];
 	static int winner=0;
+	/**
+	Default constructor. Initializes board to a null
+    **/
 	WinUtil()
 	{
 		board=null;
 	}
+	/**
+	Parameterized constructor that accepts 2d array for board configuration as parameter and assigns that to member board 
+	**/
 	WinUtil(String board[][])
 	{
 		this.board=board;
 	}
-	String[][] getBoard()
+	/**
+	@return retuns instance member board. 
+	<br>Getter for board.
+	**/
+	public String[][] getBoard()
 	{
 		return this.board;
 	}
-	void setBoard(String[][] board)
+	/**
+	@param board Sets instance member board
+	<br>Setter for board.
+	**/
+	public void setBoard(String[][] board)
 	{
 		this.board=board;
 	}
+	/**
+	@param nx number of xs
+	@param no number of os
+	@param ns number of spaces
+	@return score corresponding to the board configuration
+	<br>Score is computed as 10^nx when there are only os and spaces. Similarly, Score is computed as -10^no when there are only xs and spaces. Score is Integer max value when x win and Integer min value when o win. Score is 0 for other cases 
+	**/
 	public long getScore(int nx,int no,int ns)
 	{
 		if(nx==0&&no==0)
@@ -45,6 +66,10 @@ public class WinUtil
 			return 0L;
 		}
 	}
+	/**
+	@return returns score corresponding to row wise computation
+	<br>Computes score for 1D array scanned rowwise by keeping track of number of xs,os and spaces in each row and invoking getScore
+	**/
 	public long getScoreRowWise()
     {
         long toRet=0L;
@@ -70,6 +95,10 @@ public class WinUtil
         }
         return toRet;
     }
+   /**
+	@return returns score corresponding to column wise computation
+	<br>Computes score for 1D array scanned column wise by keeping track of number of xs,os and spaces in each column and invoking getScore
+	**/
     public long getScoreColWise()
     {
         long toRet=0L;
@@ -95,6 +124,10 @@ public class WinUtil
         }
         return toRet;
     }
+    /**
+	@return returns score corresponding to primary diagonal
+	<br>Computes score for 1D array scanned along primary diagonal and then invoking getScore
+	**/
     public long getScoreDiagonal()
     {
     	int ns=0,nx=0,no=0;
@@ -115,6 +148,10 @@ public class WinUtil
         }
         return getScore(nx,no,ns);
     }
+    /**
+	@return returns score corresponding to secondary diagonal
+	<br>Computes score for 1D array scanned along secondary diagonal and then invoking getScore
+	**/
     public long getScoreSecondaryDiagonal()
     {
     	int ns=0,nx=0,no=0;
@@ -135,6 +172,10 @@ public class WinUtil
         }
         return getScore(nx,no,ns);
     }
+    /**
+    @return true when the state is a win else false
+    <br>Computes the score of the board configuration along row, column wise and through primary and secondary diagonals. When the score is grater than 10^board length, then the state is considered as win state. This method also updates the winner of the game. 
+    **/
     public boolean checkForWin()
     {
     	long diagonalScore=getScoreDiagonal();

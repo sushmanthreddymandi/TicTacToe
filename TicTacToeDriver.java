@@ -4,22 +4,15 @@ import java.awt.event.*;
 public class TicTacToeDriver
 {
 	static boolean isAi=false;
-	static final String x="X",o="O";
-	static public boolean isMovesLeft(String board[][])
-    {
-        for(int i=0;i<board.length;i++)
-        {
-            for(int j=0;j<board.length;j++)
-            {
-                if(board[i][j].equals(""))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    static Move findBestMove(String board[][]) 
+	static final String x="X";
+    static final String o="O";
+
+    /**
+    @param board This is a 2D grid representing the present state of the board
+    @return This method returns the best move that the computer has to take against human by calling min-max algorithm.
+    <br>This function returns cell position as move object that minimizes the human score
+    **/
+    static public Move findBestMove(String board[][]) 
 	{ 
 	    long bestVal=Long.MIN_VALUE;
 	    Move bestMove=new Move();
@@ -45,20 +38,50 @@ public class TicTacToeDriver
 	    } 
 	    return bestMove;
 	}
-    static long evaluate(String b[][]) 
+
+    /**
+    @param board This is a 2D grid representing the present state of the board
+    @return This method returns true when all the cells are occupied by either "O" or "X"
+    <br>This function returns true when all the cells are not filled else returns false
+    **/
+    static public boolean isMovesLeft(String board[][])
+    {
+        for(int i=0;i<board.length;i++)
+        {
+            for(int j=0;j<board.length;j++)
+            {
+                if(board[i][j].equals(""))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+    @param board This is a 2d grid representing the present state of the board
+    @return This method returns the score corresponding to the present state by evaluating all rows, columns, diagonal and secondary diagonal
+    <br>This function computes score corresponding to the state of the given tictactoe grid
+    **/
+    static public long evaluate(String board[][]) 
 	{ 
-        WinUtil w=new WinUtil(b);
+        WinUtil w=new WinUtil(board);
         long score=w.getScoreRowWise();
-        //if(score!=0)return score;
         score+=w.getScoreColWise();
-        //if(score!=0)return score;
         score+=w.getScoreDiagonal();
-        //if(score!=0)return score;
         score+=w.getScoreSecondaryDiagonal();
-        //if(score!=0)return score;
 	    return score;
 	}
-	static long minimax(String board[][],int depth,boolean isMax )
+
+    /**
+    @param board This is a 2d grid representing the present state of the board
+    @param depth This is the depth of recursion happening while computing the solutions
+    @param isMax This represents weather this method is invoked for max or min state
+    @return This method returns the score corresponding to the permuted state
+    <br>This function computes score corresponding to the state of the given tictactoe grid using <b>min-max algorithm</b>. This fails when the size of grid is more than 3.
+    **/
+	static public long minimax(String board[][],int depth,boolean isMax )
     {
         long score=evaluate(board);
         if(score==10)
@@ -108,7 +131,17 @@ public class TicTacToeDriver
             return best;
         }
     }
-    static long minimax(String board[][],int depth,boolean isMax,long alpha,long beta)
+
+    /**
+    @param board This is a 2d grid representing the present state of the board
+    @param depth This is the depth of recursion happening while computing the solutions
+    @param isMax This represents weather this method is invoked for max or min state
+    @param alpha The value corresponding to alpha
+    @param beta The value corresponding to beta
+    @return This method returns the score corresponding to the permuted state or partial score when the depth of recursion tree exceeds a threshold
+    <br>This function computes score corresponding to the state of the given tictactoe grid using <b>min-max algorithm with alpha beta pruning</b>. This scales till the size of grid is less than 5 for a pruned depth 5.
+    **/
+    static public long minimax(String board[][],int depth,boolean isMax,long alpha,long beta)
     {
         long score=evaluate(board);
         if(depth>=5&&score!=0)
@@ -143,7 +176,6 @@ public class TicTacToeDriver
                 }
                 if(toBreak)break;
             }
-            //System.out.println(alpha+" "+beta);
             return best;
         }
         else
@@ -170,10 +202,14 @@ public class TicTacToeDriver
                 }
                 if(toBreak)break;
             }
-            //System.out.println(alpha+" "+beta);
             return best;
         }
     }
+
+    /**
+    @param args command line arguments
+    <br>Can be invoked through 2 ways. <br>1. <b>java TicTacToeDriver n</b><br>2. <b>java TicTacToeDriver ai n</b><br> where n is an integer representing the size of the grid 
+    **/
     public static void main(String[] args) 
     {
     	TicTacToe window; 

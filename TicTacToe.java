@@ -4,10 +4,16 @@ import javax.swing.*;
 public class TicTacToe extends JFrame implements ActionListener
 {
     private Button buttons[][]; 
-    private int alternate = 0;
-    public TicTacToe(String title,int n)
+    private int alternate;
+    /**
+    @param title Title of the GUI frame
+    @param n The size of the Tictactoe grid
+    <br>This constructor initialises the GUI frame and set its layout to grid layout. Further, calls initialize method to add buttons to the layout. 
+    **/
+    public TicTacToe(String title , int n)
     {
         super(title);
+        alternate=0;
         buttons=new Button[n][n];
         setLayout(new GridLayout(n,n));
         initialize();
@@ -15,6 +21,9 @@ public class TicTacToe extends JFrame implements ActionListener
         setBounds(100,100,n*60,n*60);
         setVisible(true);
     }
+    /**
+    <br>This method adds n<sup>2</sup> buttons to the grid of dimension nxn and register the button click events to the event listener 
+    **/
     public void initialize()
     {
         for(int i = 0; i < buttons.length; i++)
@@ -28,6 +37,9 @@ public class TicTacToe extends JFrame implements ActionListener
             }
         }
     }
+    /**
+    <br>This method is invoked when the game ends. This method resets the grid state and other initial variables
+    **/
     public void reset()
     {
         alternate = 0;
@@ -39,6 +51,10 @@ public class TicTacToe extends JFrame implements ActionListener
             }
         }
     }
+    /**
+    @param e The wrapper object that contains information regarding the button click event.
+    <br>This method is invoked by listener when the button click is performed. This method updates the state of the grid based on game type: player vs player or player vs computer(invokes findBestMove in this case). Then notified using a dialog when the game is finised.
+    **/
     public void actionPerformed(ActionEvent e) 
     {
         Button buttonClicked = (Button)e.getSource();
@@ -84,6 +100,9 @@ public class TicTacToe extends JFrame implements ActionListener
             }
         }
     }
+    /**
+    @return Returns the state of the grid in the UI as 2D String Array using the labels on the buttons 
+    **/
     public String[][] getBoard()
     {
         String s[][]=new String[buttons.length][buttons.length];
