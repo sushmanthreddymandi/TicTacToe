@@ -212,15 +212,43 @@ public class TicTacToeDriver
     **/
     public static void main(String[] args) 
     {
-    	TicTacToe window; 
-        if(args[0].equalsIgnoreCase("ai"))
-    	{
-    		isAi=true;
-            window=new TicTacToe("TicTacToe Player VS AI",Integer.parseInt(args[1]));
-    	}
-    	else
-    	{
-    		window=new TicTacToe("TicTacToe Player vs Player",Integer.parseInt(args[0]));	
-    	}
+    	TicTacToe window;
+        try
+        {
+            if(args[0].equalsIgnoreCase("ai"))
+            {
+                if(Integer.parseInt(args[1])<3)
+                {
+                    throw new RuntimeException();
+                }
+                isAi=true;
+                window=new TicTacToe("TicTacToe Player VS AI",Integer.parseInt(args[1]));
+            }
+            else
+            {
+                if(Integer.parseInt(args[1])<3)
+                {
+                    throw new RuntimeException();
+                }
+                window=new TicTacToe("TicTacToe Player vs Player",Integer.parseInt(args[0]));   
+            }
+        } 
+        catch(NumberFormatException e)
+        {
+            System.out.println("Grid size should be a valid positive integer >2.");
+            System.out.println("Usage: java TicTacToeDriver [ai] n.");
+            System.exit(0);
+        }
+        catch(RuntimeException e)
+        {
+            System.out.println("Grid size should be a valid positive integer >2.");
+            System.out.println("Usage: java TicTacToeDriver [ai] n.");
+            System.exit(0);
+        }
+        catch(Exception e)
+        {
+            System.out.println("Usage: java TicTacToeDriver [ai] n.");
+            System.exit(0);
+        }
     }
 }
